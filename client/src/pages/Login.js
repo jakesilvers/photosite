@@ -1,13 +1,15 @@
 // src/pages/Login.js
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API from '../utils/api'; // ✅ Use your configured Axios instance
+import { motion } from 'framer-motion';
+import API from '../utils/api';
 
 export default function Login() {
   const [username, setUser] = useState('');
   const [password, setPass] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [shatter, setShatter] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,9 +35,13 @@ export default function Login() {
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
 
-      if (role === 'master') navigate('/upload');
-      else if (role === 'guest') navigate('/gallery');
-      else navigate('/');
+      setShatter(true);
+
+      setTimeout(() => {
+        if (role === 'master') navigate('/upload');
+        else if (role === 'guest') navigate('/gallery');
+        else navigate('/');
+      }, 1200); // wait for animation
     } catch (err) {
       console.error(err);
       setError('Invalid username or password');
@@ -48,30 +54,51 @@ export default function Login() {
     if (e.key === 'Enter') login();
   };
 
+  const shards = Array.from({ length: 9 });
+
   return (
     <div style={styles.page}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Login</h2>
-        <input
-          placeholder="Username"
-          value={username}
-          onChange={e => setUser(e.target.value)}
-          onKeyDown={handleKeyDown}
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPass(e.target.value)}
-          onKeyDown={handleKeyDown}
-          style={styles.input}
-        />
-        <button onClick={login} disabled={loading} style={styles.button}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-        {error && <p style={styles.error}>{error}</p>}
-      </div>
+      {!shatter ? (
+        <div style={styles.card}>
+          <h2 style={styles.title}>Login</h2>
+          <input
+            placeholder="Username"
+            value={username}
+            onChange={e => setUser(e.target.value)}
+            onKeyDown={handleKeyDown}
+            style={styles.input}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPass(e.target.value)}
+            onKeyDown={handleKeyDown}
+            style={styles.input}
+          />
+          <button onClick={login} disabled={loading} style={styles.button}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+          {error && <p style={styles.error}>{error}</p>}
+        </div>
+      ) : (
+        // Shatter effect
+        <div style={styles.card}>
+          {shards.map((_, i) => (
+            <motion.div
+              key={i}
+              style={styles.shard}
+              initial={{ opacity: 1, y: 0, rotate: 0 }}
+              animate={{
+                opacity: 0,
+                y: 200 + Math.random() * 100,
+                rotate: 90 + Math.random() * 180,
+              }}
+              transition={{ duration: 1, ease: 'easeInOut' }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -85,6 +112,7 @@ const styles = {
     alignItems: 'center',
   },
   card: {
+    position: 'relative',
     background: '#fff',
     padding: '2rem',
     borderRadius: '12px',
@@ -94,6 +122,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
+    overflow: 'hidden',
   },
   title: {
     textAlign: 'center',
@@ -118,5 +147,16 @@ const styles = {
     color: 'red',
     textAlign: 'center',
     marginTop: '0.5rem',
+  },
+  shard: {
+    position: 'absolute',
+    width: '100px',
+    height: '100px',
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    borderRadius: '6px',
+    top: `${Math.random() * 100}%`,
+    left: `${Math.random() * 100}%`,
   },
 };
