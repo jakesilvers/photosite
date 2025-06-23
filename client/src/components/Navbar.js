@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <nav style={styles.nav}>
       <div style={styles.container}>
-        <span style={styles.logo}>📸 PhotoSite</span>
+        <span style={styles.logo}>📸 Frankie's Photo Hut</span>
         <div style={styles.links}>
           {isLoggedIn && (
             <>
