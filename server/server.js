@@ -9,29 +9,34 @@ const photoRoutes = require('./routes/photo');
 
 const app = express();
 
-// ✅ Configure Cloudinary early (before routes use it)
+// ✅ Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
+// ✅ CORS setup
 app.use(cors({
-  origin: ['https://jakesilvers.com','https://photosite-lfbz.onrender.com'],
+  origin: ['https://jakesilvers.com', 'https://photosite-lfbz.onrender.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// ✅ Logging middleware (optional but useful)
+// ✅ Logging middleware
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
-// ✅ Middleware
+// ✅ JSON parsing
 app.use(express.json());
+
+// ✅ Basic test route for Render
+app.get('/', (req, res) => {
+  res.send('Backend is running');
+});
 
 // ✅ Routes
 app.use('/api/auth', authRoutes);
