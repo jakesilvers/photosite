@@ -18,7 +18,7 @@ cloudinary.config({
 
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://jakesilvers.com','https://photosite-lfbz.onrender.com'],
+  origin: ['https://jakesilvers.com','https://photosite-lfbz.onrender.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -43,6 +43,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error(err));
 
 // ✅ Start server
-app.listen(4000, () => {
-  console.log("Server running on port 4000");
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
