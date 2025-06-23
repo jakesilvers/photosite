@@ -1,6 +1,7 @@
+// src/pages/Login.js
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../utils/api'; // ✅ Use your configured Axios instance
 
 export default function Login() {
   const [username, setUser] = useState('');
@@ -20,14 +21,15 @@ export default function Login() {
 
   const login = async () => {
     setLoading(true);
+    setError('');
+
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/login', {
+      const res = await API.post('/auth/login', {
         username,
         password,
       });
 
       const { token, role } = res.data;
-
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
 
