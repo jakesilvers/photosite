@@ -45,7 +45,7 @@ router.post(
             const photo = await Photo.create({
               title: req.body.title,
               imageUrl: result.secure_url,
-              uploadedBy: req.user.id, // Optional
+              uploadedBy: req.user.id,
             });
 
             return res.status(201).json(photo);
@@ -63,5 +63,16 @@ router.post(
     }
   }
 );
+
+// ✅ DELETE: Delete photo by ID (master only)
+router.delete('/:id', verifyToken, requireRole('master'), async (req, res) => {
+  try {
+    const deleted = await Photo.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Photo not found' });
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
