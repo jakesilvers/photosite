@@ -19,6 +19,7 @@ cloudinary.config({
 
 app.use(cors({
   origin: ['http://localhost:3000', 'https://jakesilvers.com'],
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
